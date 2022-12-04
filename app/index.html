@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Wikispeedia Neo4J</title>
+    <!--  Bootstrap & JQuery  -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link href="cdn/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script>require('popper.js');</script>
+    <script>require('bootstrap');</script>
+    <!--  Bootstrap Autocomplete  -->
+    <script src="cdn/typeahead.bundle.js"></script>
+    <script src="cdn/arbor.js"></script>
+    <script src="cdn/graphics.js"></script>
+    <script src="cdn/renderer.js"></script>
+</head>
+<body>
+
+<div class="row m-md-2">
+    <h1>Wikispeedia Neo4J</h1>
+    <h3>by Gianluca Coletta and Paolo Speziali</h3>
+
+    <div class="m-md-2">
+        <canvas id="viewport" width="600" height="480"></canvas>
+    </div>
+
+    <div class="the-basics col  m-md-2">
+        <label for="firstArticle">First Article:</label><br>
+        <input id="firstArticle" class="typeahead form-control" type="text" value="South_America">
+    </div>
+    <div class="the-basics col  m-md-2">
+        <label for="secondArticle">Second Article:</label><br>
+        <input id="secondArticle" class="typeahead form-control" type="text" value="Gold">
+    </div>
+    <div class="col  m-md-2">
+        <br><div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Select query
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" id="pathQ">Shortest Path</a></li>
+            <li><a class="dropdown-item" id="catQ">Categories (First Article)</a></li>
+            <li><a class="dropdown-item" id="ratQ">Something else here</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
