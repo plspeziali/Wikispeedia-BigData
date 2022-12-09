@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async e => {
 }, false);
 
 
-$( "#pathQ" ).click(async function () {
+$( "#shortQ" ).click(async function () {
     const driver = neo4j.driver('bolt://localhost:7687',
         neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
@@ -46,7 +46,6 @@ $( "#pathQ" ).click(async function () {
     if(first === second){
         return;
     }
-    let res;
     try {
         const result = await session.run(
             'MATCH (nodo1:Article {name: \'' + first + '\'}),\n' +
@@ -109,6 +108,78 @@ $( "#pathQ" ).click(async function () {
     await driver.close()
 });
 
+$( "#longQ" ).click(async function () {
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
+    const session = driver.session()
+    let first = $('#firstArticle').val();
+    let second = $('#secondArticle').val()
+    if(first === second){
+        return;
+    }
+    try {
+        const result = await session.run(
+            'MATCH (a:Article {name: \'' + first + '\'}),\n' +
+            '      (b:Article {name: \'' + second + '\'}),\n' +
+            '      p = (a)-[*]-(b) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1'
+        )
+
+        for(let n of edges){
+            sys.pruneEdge(n)
+        }
+
+        for(let n of nodes){
+            sys.pruneNode(n)
+        }
+        nodes.splice(0,nodes.length)
+
+        edges.splice(0,edges.length)
+        
+        console.log(result);
+
+        for (let el of result.records) {
+            let seg = el.get(0).segments;
+            console.log(seg);
+            var n1,n2,e;
+            for (let i = 0; i < seg.length; i++) {
+		    if(i==0){
+		    	name1 = seg[i].start.properties.name;
+		      	name2 = seg[i].end.properties.name;
+		        n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+		        n2 = sys.addNode(name2,{'color':'blue','shape':'dot','label':name2});
+		        e = sys.addEdge(n1, n2);
+		        nodes.push(n1);
+		        nodes.push(n2);
+		        edges.push(e);
+		    } else if(i>0 && i<seg.length-1){
+		    	n1 = n2
+		    	name2 = seg[i].end.properties.name;
+		    	var n2 = sys.addNode(name2,{'color':'blue','shape':'dot','label':name2});
+		    	e = sys.addEdge(n1, n2);
+		    	nodes.push(n2);
+		        edges.push(e);
+		    } else {
+		    	n1 = n2
+		    	name2 = seg[i].end.properties.name;
+		    	var n2 = sys.addNode(name2,{'color':'red','shape':'dot','label':name2});
+		    	e = sys.addEdge(n1, n2);
+		    	nodes.push(n2);
+		        edges.push(e);
+		    }
+            }
+        }
+
+        console.log(result)
+
+
+    } finally {
+        await session.close()
+    }
+
+    // on application exit:
+    await driver.close()
+});
+
 $( "#catQ" ).click(async function () {
     const driver = neo4j.driver('bolt://localhost:7687',
         neo4j.auth.basic("neo4j", "bigdata"))
@@ -118,7 +189,6 @@ $( "#catQ" ).click(async function () {
     if(first === second){
         return;
     }
-    let res;
     try {
         const result = await session.run(
             'MATCH (nodo1:Article {name: \'' + first + '\'}),\n' +
@@ -182,12 +252,6 @@ $( "#hardQ" ).click(async function () {
     const driver = neo4j.driver('bolt://localhost:7687',
         neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
-    let first = $('#firstArticle').val();
-    let second = $('#secondArticle').val()
-    if(first === second){
-        return;
-    }
-    let res;
     try {
         const result = await session.run(
             'MATCH (a:Article) -[r:CHALLENGE {rating: "5"}]-> (b:Article)\n' +
@@ -238,12 +302,6 @@ $( "#easyQ" ).click(async function () {
     const driver = neo4j.driver('bolt://localhost:7687',
         neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
-    let first = $('#firstArticle').val();
-    let second = $('#secondArticle').val()
-    if(first === second){
-        return;
-    }
-    let res;
     try {
         const result = await session.run(
             'MATCH (a:Article) -[r:CHALLENGE {rating: "1"}]-> (b:Article)\n' +
@@ -290,6 +348,54 @@ $( "#easyQ" ).click(async function () {
     await driver.close()
 });
 
+$( "#neigQ" ).click(async function () {
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
+    const session = driver.session()
+    let first = $('#firstArticle').val();
+    try {
+        const result = await session.run(
+            'MATCH (node1 {name: "'+first+'"})-[r]->(node2) return node1, node2, r LIMIT 10'
+        )
+
+        for(let n of edges){
+            sys.pruneEdge(n)
+        }
+
+        for(let n of nodes){
+            sys.pruneNode(n)
+        }
+        nodes.splice(0,nodes.length)
+
+        edges.splice(0,edges.length)
+        
+        name1 = result.records[0].get(0).properties.name;
+        var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+        nodes.push(n1);
+        
+
+        for (let el of result.records) {
+            console.log(el)
+    	    name2 = el.get(1).properties.name;
+	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    e = sys.addEdge(n1, n2);
+            nodes.push(n2);
+            edges.push(e);
+            type = el.get(2).type;
+	    var t = sys.addNode(type,{'color':'blue','shape':'square','label':type});
+	    e = sys.addEdge(t, n2);
+            nodes.push(t);
+            edges.push(e);
+        }
+
+
+    } finally {
+        await session.close()
+    }
+
+    // on application exit:
+    await driver.close()
+});
 
 var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
