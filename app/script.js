@@ -6,8 +6,8 @@ let edges = [];
 var sys;
 
 document.addEventListener('DOMContentLoaded', async e => {
-    const driver = neo4j.driver('bolt://54.208.199.182:7687',
-        neo4j.auth.basic("neo4j", "turbines-sentry-screen"))
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
     try {
         const result = await session.run(
@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', async e => {
 
 
 $( "#pathQ" ).click(async function () {
-    const driver = neo4j.driver('bolt://54.208.199.182:7687',
-        neo4j.auth.basic("neo4j", "turbines-sentry-screen"))
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
     let first = $('#firstArticle').val();
     let second = $('#secondArticle').val()
@@ -51,7 +51,7 @@ $( "#pathQ" ).click(async function () {
         const result = await session.run(
             'MATCH (nodo1:Article {name: \'' + first + '\'}),\n' +
             '      (nodo2:Article {name: \'' + second + '\'}),\n' +
-            '      p = shortestPath((nodo1)-[:RELTYPE*]-(nodo2))\n' +
+            '      p = shortestPath((nodo1)-[:HYPERLINK*]-(nodo2))\n' +
             'RETURN p'
         )
 
@@ -68,17 +68,102 @@ $( "#pathQ" ).click(async function () {
 
         for (let el of result.records) {
             let seg = el.get(0).segments;
-            console.log(seg)
+            console.log(seg);
+            var n1,n2,e;
             for (let i = 0; i < seg.length; i++) {
-                name1 = seg[i].start.properties.name;
-                name2 = seg[i].end.properties.name;
-                var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
-                var n2 = sys.addNode(name2,{'color':'blue','shape':'dot','label':name2});
-                var e = sys.addEdge(n1, n2);
-                nodes.push(n1);
-                nodes.push(n2);
-                edges.push(e);
+		    if(i==0){
+		    	name1 = seg[i].start.properties.name;
+		      	name2 = seg[i].end.properties.name;
+		        n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+		        n2 = sys.addNode(name2,{'color':'blue','shape':'dot','label':name2});
+		        e = sys.addEdge(n1, n2);
+		        nodes.push(n1);
+		        nodes.push(n2);
+		        edges.push(e);
+		    } else if(i>0 && i<seg.length-1){
+		    	n1 = n2
+		    	name2 = seg[i].end.properties.name;
+		    	var n2 = sys.addNode(name2,{'color':'blue','shape':'dot','label':name2});
+		    	e = sys.addEdge(n1, n2);
+		    	nodes.push(n2);
+		        edges.push(e);
+		    } else {
+		    	n1 = n2
+		    	name2 = seg[i].end.properties.name;
+		    	var n2 = sys.addNode(name2,{'color':'red','shape':'dot','label':name2});
+		    	e = sys.addEdge(n1, n2);
+		    	nodes.push(n2);
+		        edges.push(e);
+		    }
             }
+        }
+
+        console.log(result)
+
+
+    } finally {
+        await session.close()
+    }
+
+    // on application exit:
+    await driver.close()
+});
+
+$( "#catQ" ).click(async function () {
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
+    const session = driver.session()
+    let first = $('#firstArticle').val();
+    let second = $('#secondArticle').val()
+    if(first === second){
+        return;
+    }
+    let res;
+    try {
+        const result = await session.run(
+            'MATCH (nodo1:Article {name: \'' + first + '\'}),\n' +
+            '      (nodo2:Article {name: \'' + second + '\'})\n' +
+            'RETURN nodo1, nodo2'
+        )
+
+        for(let n of edges){
+            sys.pruneEdge(n)
+        }
+
+        for(let n of nodes){
+            sys.pruneNode(n)
+        }
+        nodes.splice(0,nodes.length)
+
+        edges.splice(0,edges.length)
+
+	console.log(result);
+
+        for (let el of result.records) {
+            for(let i = 0; i < el.length; i++){
+		console.log(el);
+		var n1,n2;
+		name1 = el.get(i).properties.name;
+		cat1 = ((el.get(i).properties.category)).slice(1,-1);
+		catList = cat1.split(",");
+		var n = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+		nodes.push(n1);
+		for(let cat of catList){
+		    let catS = cat.split(".");
+		    var c = sys.addNode(catS[1],{'color':'blue','shape':'square','label':catS[1]});
+		    nodes.push(c);
+		    e = sys.addEdge(n, c);
+		    edges.push(e);
+		    var c1 = c;
+		    for(let i = 2; i < catS.length; i++){
+		    	var c2 = sys.addNode(catS[i],{'color':'blue','shape':'square','label':catS[i]});
+		    	nodes.push(c);
+		    	e = sys.addEdge(c1, c2);
+		    	edges.push(e);
+		    	var c1 = c2;
+		    }
+		}
+	    }
         }
 
         console.log(result)
