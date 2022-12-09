@@ -144,10 +144,10 @@ $( "#catQ" ).click(async function () {
 		console.log(el);
 		var n1,n2;
 		name1 = el.get(i).properties.name;
-		cat1 = ((el.get(i).properties.category)).slice(1,-1);
+		cat1 = ((el.get(i).properties.category)).slice(1,-2);
 		catList = cat1.split(",");
 		var n = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
-		nodes.push(n1);
+		nodes.push(n);
 		for(let cat of catList){
 		    let catS = cat.split(".");
 		    var c = sys.addNode(catS[1],{'color':'blue','shape':'square','label':catS[1]});
@@ -160,6 +160,7 @@ $( "#catQ" ).click(async function () {
 		    	nodes.push(c);
 		    	e = sys.addEdge(c1, c2);
 		    	edges.push(e);
+		    	nodes.push(c2);
 		    	var c1 = c2;
 		    }
 		}
@@ -176,6 +177,119 @@ $( "#catQ" ).click(async function () {
     // on application exit:
     await driver.close()
 });
+
+$( "#hardQ" ).click(async function () {
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
+    const session = driver.session()
+    let first = $('#firstArticle').val();
+    let second = $('#secondArticle').val()
+    if(first === second){
+        return;
+    }
+    let res;
+    try {
+        const result = await session.run(
+            'MATCH (a:Article) -[r:CHALLENGE {rating: "5"}]-> (b:Article)\n' +
+            'RETURN a,b,r.duration,r.pathLength ORDER BY r.duration DESC LIMIT 1'
+        )
+
+        for(let n of edges){
+            sys.pruneEdge(n)
+        }
+
+        for(let n of nodes){
+            sys.pruneNode(n)
+        }
+        nodes.splice(0,nodes.length)
+
+        edges.splice(0,edges.length)
+
+        for (let el of result.records) {
+            console.log(el);
+    	    name1 = el.get(0).properties.name;
+    	    name2 = el.get(1).properties.name;
+	    var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    e = sys.addEdge(n1, n2);
+            nodes.push(n1);
+            nodes.push(n2);
+            edges.push(e);
+            var c = sys.addNode(el.get(2),{'color':'blue','shape':'square','label':'Duration: '+el.get(2)});
+	    nodes.push(c);
+	    e = sys.addEdge(n1, c);
+      	    edges.push(e);
+      	    var c = sys.addNode(el.get(3),{'color':'red','shape':'square','label':'Path Length: '+el.get(3)});
+	    nodes.push(c);
+	    e = sys.addEdge(n2, c);
+      	    edges.push(e);
+        }
+
+
+    } finally {
+        await session.close()
+    }
+
+    // on application exit:
+    await driver.close()
+});
+
+$( "#easyQ" ).click(async function () {
+    const driver = neo4j.driver('bolt://localhost:7687',
+        neo4j.auth.basic("neo4j", "bigdata"))
+    const session = driver.session()
+    let first = $('#firstArticle').val();
+    let second = $('#secondArticle').val()
+    if(first === second){
+        return;
+    }
+    let res;
+    try {
+        const result = await session.run(
+            'MATCH (a:Article) -[r:CHALLENGE {rating: "1"}]-> (b:Article)\n' +
+            'RETURN a,b,r.duration,r.pathLength ORDER BY r.duration ASC LIMIT 1'
+        )
+
+        for(let n of edges){
+            sys.pruneEdge(n)
+        }
+
+        for(let n of nodes){
+            sys.pruneNode(n)
+        }
+        nodes.splice(0,nodes.length)
+
+        edges.splice(0,edges.length)
+
+        for (let el of result.records) {
+            console.log(el);
+    	    name1 = el.get(0).properties.name;
+    	    name2 = el.get(1).properties.name;
+	    var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
+	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    e = sys.addEdge(n1, n2);
+            nodes.push(n1);
+            nodes.push(n2);
+            edges.push(e);
+            var c = sys.addNode(el.get(2),{'color':'blue','shape':'square','label':'Duration: '+el.get(2)});
+	    nodes.push(c);
+	    e = sys.addEdge(n1, c);
+      	    edges.push(e);
+      	    var c = sys.addNode(el.get(3),{'color':'red','shape':'square','label':'Path Length: '+el.get(3)});
+	    nodes.push(c);
+	    e = sys.addEdge(n2, c);
+      	    edges.push(e);
+        }
+
+
+    } finally {
+        await session.close()
+    }
+
+    // on application exit:
+    await driver.close()
+});
+
 
 var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
