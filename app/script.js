@@ -5,7 +5,7 @@ let nodes = [];
 let edges = [];
 var sys;
 
-document.addEventListener('DOMContentLoaded', async e => {
+/*document.addEventListener('DOMContentLoaded', async e => {
     const driver = neo4j.driver('bolt://localhost:7687',
         neo4j.auth.basic("neo4j", "bigdata"))
     const session = driver.session()
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async e => {
     sys = arbor.ParticleSystem(1000, 400,1);
     sys.parameters({gravity:true});
     sys.renderer = Renderer("#viewport") ;
-}, false);
+}, false);*/
 
 
 $( "#shortQ" ).click(async function () {
@@ -134,7 +134,7 @@ $( "#longQ" ).click(async function () {
         nodes.splice(0,nodes.length)
 
         edges.splice(0,edges.length)
-        
+
         console.log(result);
 
         for (let el of result.records) {
@@ -368,11 +368,11 @@ $( "#neigQ" ).click(async function () {
         nodes.splice(0,nodes.length)
 
         edges.splice(0,edges.length)
-        
+
         name1 = result.records[0].get(0).properties.name;
         var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
         nodes.push(n1);
-        
+
 
         for (let el of result.records) {
             console.log(el)
@@ -397,36 +397,11 @@ $( "#neigQ" ).click(async function () {
     await driver.close()
 });
 
-var substringMatcher = function(strs) {
-    return function findMatches(q, cb) {
-        var matches, substringRegex;
 
-        // an array that will be populated with substring matches
-        matches = [];
+$( ".form-control" ).autocomplete({
+    source: function(request, response) {
+        var results = $.ui.autocomplete.filter(require('./articleNames.json'), request.term);
 
-        // regex used to determine if a string contains the substring `q`
-        substrRegex = new RegExp(q, 'i');
-
-        // iterate through the pool of strings and for any string that
-        // contains the substring `q`, add it to the `matches` array
-        $.each(strs, function(i, str) {
-            if (substrRegex.test(str)) {
-                matches.push(str);
-            }
-        });
-
-        cb(matches);
-    };
-};
-
-
-$('.the-basics .typeahead').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-},
-{
-    name: 'states',
-    limit:10,
-    source: substringMatcher(require('./articleNames.json'))
+        response(results.slice(0, 20));
+    }
 });
