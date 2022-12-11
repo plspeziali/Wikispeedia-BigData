@@ -169,9 +169,9 @@ article is displayed.
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 RETURN nodo1, nodo2
 ```
-![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn1.png)
-2. **Shortest Path**: by entering the name of a source article and a destination article,
-a graph is displayed corresponding to the shortest path between the two articles.
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn3.png)
+2. **Shortest Path**: by entering the name of a source article (green node) and a destination article
+(destination node), a graph is displayed corresponding to the shortest path between the two articles.
 ```cypher
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = shortestPath((nodo1)-[:HYPERLINK*]-(nodo2))
@@ -184,7 +184,7 @@ articles are displayed.
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
 ```
-![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn3.png)
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn1.png)
 4. **The Hardest Challenge**: the hardest challenge (the one with an average rating of 5 and
 the longest average duration) is displayed on a graph.
 ```cypher
