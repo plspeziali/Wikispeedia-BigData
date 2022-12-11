@@ -44,7 +44,7 @@ The second one is `links.tsv` and represents the various hyperlinks in each arti
 | 1_Ceres      | 3_Juno          |
 | 1_Ceres      | 4_Vesta         |
 
-The third one is `paths_finished`:
+The third one is `paths_finished.tsv`:
 
 | **hashedIpAddress** | **timestamp** | **durationInSec** | **path**                                                                   | **rating** |
 |---------------------|---------------|-------------------|----------------------------------------------------------------------------|------------|
@@ -95,7 +95,113 @@ Python Notebook.
 By launching the `create-database.sh` shell script or executing 
 the Jupyter Notebook `wikispeediaSpark.ipynb` inside a Spark environment
 you can make the Spark program execute.
+1.  `categories.tsv`:
 
+    1. Through a map operation, the URL format of each article and each category is decoded.
+
+    2. Through a map reduce operation the categories of each article are grouped.
+
+   2. `links.tsv`: Through a map operation, the URL format of each source and destination article is decoded.
+
+   3. `paths_finished.tsv`:
+
+      1. By defining a function and using a map operation, a new RDD is constructed containing the source
+      and destination of the path, the duration in seconds, the rating assigned by the user, a variable
+      (`ratingNum`, value `0` if the rating has not been assigned, otherwise value `1`)
+      and the length of the path.
+   
+      2. Through a map and reduce operation, all rating values for each individual path are added together.
+   
+      3. Through a map and reduce operation, all values of the ratingNum variable of each
+      individual path are added together.
+   
+      4. The two preceding operations are used to calculate the average rating of each
+      path through the use of a function and a reduce operation. 
+
+      5. Through the use of map, mapValues and reduce operations, the average duration in
+      seconds of each path is calculated.
+
+      6. The same as above is performed for the average length of each individual path.
+
+      7. Finally, a new RDD is constructed containing the source and destination of the path,
+      the average duration in seconds, the average length and the average rating.
+
+After that, the three RDDs are converted into three dataframes, which are used to insert
+into the Neo4j database the nodes relating to articles with a category-related property,
+the edges of to hyperlinks and the edges of to challenges with the following properties:
+* average duration;
+* average rating;
+* average length.
+
+The queries used to create the property graph are:
+```cypher
+CREATE (n:Article {name: "ARTICLE_NAME", category: "[CATEGORY_NAME,...,CATEGORY_NAME]"})
+```
+```cypher
+MATCH (a:Article), (b:Article)
+WHERE a.name = "ARTICLE_1_NAME" AND b.name = "ARTICLE_2_NAME"
+CREATE (a)-[r:HYPERLINK]->(b) RETURN type(r)
+```
+```cypher
+MATCH (a:Article), (b:Article)
+WHERE a.name = "ARTICLE_1_NAME" AND b.name = "ARTICLE_2_NAME"
+CREATE (a)-[r:CHALLENGE]->(b)
+SET r.duration = "AVG_DURATION"
+r.pathLength = "AVG_LENGTH"
+r.rating = "AVG_RATING"
+```
+
+### Electron Application (with use cases)
+
+The Electron application allows the user to make five queries on the database and display
+the results via an interactive HMTL5 Canvas.
+
+The canvas over HTML uses the **arbor.js** library for creating force directed graphs; these graphs are not, however, directed.
+To overcome this problem, the nodes of the graph have been appropriately colored so
+that the direction of the path can be easily interpreted.
+
+The five queries realised are:
+1. **Categories**: by entering the name of two articles, a graph containing the categories of each
+article is displayed.
+```cypher
+MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
+RETURN nodo1, nodo2
+```
+2. **Shortest Path**: by entering the name of a source article and a destination article,
+a graph is displayed corresponding to the shortest path between the two articles.
+```cypher
+MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
+p = shortestPath((nodo1)-[:HYPERLINK*]-(nodo2))
+RETURN p
+```
+3. **All neighbours of the 1st node**: by entering the name of an article, its neighbouring
+articles are displayed.
+```cypher
+MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
+p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
+```
+4. **The Hardest Challenge**: the hardest challenge (the one with an average rating of 5 and
+the longest average duration) is displayed on a graph.
+```cypher
+MATCH (a:Article) -[r:CHALLENGE {rating: "5"}]-> (b:Article)
+RETURN a,b,r.duration,r.pathLength ORDER BY r.duration DESC LIMIT 1
+```
+5. **The Easiest Challenge**: the easiest challenge (the one with an average rating of 1 and
+the shortest average duration) is displayed on a graph.
+```cypher
+MATCH (a:Article) -[r:CHALLENGE {rating: "1"}]-> (b:Article)
+RETURN a,b,r.duration,r.pathLength ORDER BY r.duration ASC LIMIT 1
+```
+
+
+## Limitations and future developments
+Initially, it was thought that we could integrate a small estimator (with **MLlib**) that,
+with a linear regression algorithm, would estimate null ratings from existing
+ratings using path length and match duration as features.
+
+However, despite having tuned the hyperparameters appropriately,
+the indicators returned an accuracy of about 20%,
+so we preferred to avoid and leave the null ratings at value `0`.
 
 
 [^1]: Robert West and Jure Leskovec:
