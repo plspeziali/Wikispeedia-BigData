@@ -151,16 +151,20 @@ r.pathLength = "AVG_LENGTH"
 r.rating = "AVG_RATING"
 ```
 
+You only need to run this script once per local Neo4J database.
+
 ### Electron Application (with use cases)
 
 The Electron application allows the user to make five queries on the database and display
 the results via an interactive HMTL5 Canvas.
 
+You can launch the application via the shell script `start.sh`.
+
 The canvas over HTML uses the **arbor.js** library for creating force directed graphs; these graphs are not, however, directed.
 To overcome this problem, the nodes of the graph have been appropriately colored so
 that the direction of the path can be easily interpreted.
 
-The five queries realised are:
+The five queries made are:
 1. **Categories**: by entering the name of two articles, a graph containing the categories of each
 article is displayed.
 ```cypher
