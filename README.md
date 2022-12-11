@@ -89,11 +89,9 @@ where `$HADOOP_DIR/bin/hdfs` must be changed with the directory path where
 the script of the dfs is located and 
 `hdfs://localhost:9000/user/bigdata2022/datasets/` with the path where
 you want the dataset to be placed in HDFS, in this last case you must
-change this path also inside the Python script and/or the
-Python Notebook.
+change this path also inside the Python Notebook.
 
-By launching the `create-database.sh` shell script or executing 
-the Jupyter Notebook `wikispeediaSpark.ipynb` inside a Spark environment
+By launching the Jupyter Notebook `wikispeediaSpark.ipynb` inside a Spark environment
 you can make the Spark program execute.
 1.  `categories.tsv`:
 

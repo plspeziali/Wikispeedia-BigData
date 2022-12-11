@@ -1,2 +1,2 @@
 cd app
-npm start
+npm start &
