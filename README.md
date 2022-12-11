@@ -73,6 +73,28 @@ interact and visualize the property graph.
 * **arbor.js** to visualize the queries result in HTML5 via a force-directed graph
 
 ---
+## Data Flow
+### PySpark
+First, after starting the Hadoop daemons,
+you need to load the three dataset files into HDFS, moving with `cd` to the folder
+[`dataset/`](https://github.com/plspeziali/Wikispeedia-BigData/tree/main/dataset)
+you can do this through these commands:
+```bash
+$HADOOP_DIR/bin/hdfs dfs -mkdir hdfs://localhost:9000/user/bigdata2022/datasets/wiki/
+$HADOOP_DIR/bin/hdfs dfs -put ./categories.tsv hdfs://localhost:9000/user/bigdata2022/datasets/wiki/
+$HADOOP_DIR/bin/hdfs dfs -put ./links.tsv hdfs://localhost:9000/user/bigdata2022/datasets/wiki/
+$HADOOP_DIR/bin/hdfs dfs -put ./paths_finished.tsv hdfs://localhost:9000/user/bigdata2022/datasets/wiki/
+```
+where `$HADOOP_DIR/bin/hdfs` must be changed with the directory path where
+the script of the dfs is located and 
+`hdfs://localhost:9000/user/bigdata2022/datasets/` with the path where
+you want the dataset to be placed in HDFS, in this last case you must
+change this path also inside the Python script and/or the
+Python Notebook.
+
+By launching the `create-database.sh` shell script or executing 
+the Jupyter Notebook `wikispeediaSpark.ipynb` inside a Spark environment
+you can make the Spark program execute.
 
 
 
