@@ -151,6 +151,8 @@ r.rating = "AVG_RATING"
 
 You only need to run this script once per local Neo4J database.
 
+----
+
 ### Electron Application (with use cases)
 
 The Electron application allows the user to make five queries on the database and display
@@ -169,32 +171,40 @@ article is displayed.
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 RETURN nodo1, nodo2
 ```
-2. **Shortest Path**: by entering the name of a source article and a destination article,
-a graph is displayed corresponding to the shortest path between the two articles.
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn3.png)
+*  *  *  *  *
+2. **Shortest Path**: by entering the name of a source article (green node) and a destination article
+(destination node), a graph is displayed corresponding to the shortest path between the two articles.
 ```cypher
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = shortestPath((nodo1)-[:HYPERLINK*]-(nodo2))
 RETURN p
 ```
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn2.png)
+*  *  *  *  *
 3. **All neighbours of the 1st node**: by entering the name of an article, its neighbouring
 articles are displayed.
 ```cypher
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
 ```
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn1.png)
+*  *  *  *  *
 4. **The Hardest Challenge**: the hardest challenge (the one with an average rating of 5 and
 the longest average duration) is displayed on a graph.
 ```cypher
 MATCH (a:Article) -[r:CHALLENGE {rating: "5"}]-> (b:Article)
 RETURN a,b,r.duration,r.pathLength ORDER BY r.duration DESC LIMIT 1
 ```
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn4.png)
+*  *  *  *  *
 5. **The Easiest Challenge**: the easiest challenge (the one with an average rating of 1 and
 the shortest average duration) is displayed on a graph.
 ```cypher
 MATCH (a:Article) -[r:CHALLENGE {rating: "1"}]-> (b:Article)
 RETURN a,b,r.duration,r.pathLength ORDER BY r.duration ASC LIMIT 1
 ```
-
+![Categories query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn5.png)
 
 ## Limitations and future developments
 Initially, it was thought that we could integrate a small estimator (with **MLlib**) that,
