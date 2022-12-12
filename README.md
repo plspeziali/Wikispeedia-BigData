@@ -68,7 +68,7 @@ value appears it means that the player did not leave any rating.
 to load the datasets, to extract the property graph and to insert it into the neo4j database
 via **Cypher** queries (using the **py2neo** library).
 * **Neo4J** to store the property graph.
-* **Node.js** to create the desktop application (you may need to install it through `sudo apt install node mpn`)
+* **Node.js** to create the desktop application (you may need to install it through `sudo apt install node npm`)
 * **Electron** (**NodeJS** module) to create the graphical application to 
 interact and visualize the property graph.
 * **arbor.js** to visualize the queries result in HTML5 via a force-directed graph
