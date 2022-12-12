@@ -221,6 +221,7 @@ the indicators returned an accuracy of about 20%,
 so we preferred to avoid and leave the null ratings at value `0`.
 
 
+
 [^1]: Robert West and Jure Leskovec:
 Human Wayfinding in Information Networks.
 21st International World Wide Web Conference (WWW), 2012.
