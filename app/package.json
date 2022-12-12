@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "Wikispeedia Neo4J",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -13,9 +13,10 @@
     "electron": "^22.0.0"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "5.2.3",
     "jquery": "^3.6.1",
     "neo4j-driver": "^5.3.0",
-    "bootstrap": "5.2.3",
     "popper.js": "^1.14.4"
   }
 }

@@ -1,2 +1,3 @@
 cd app
-npm start &
+npm install
+npm start
