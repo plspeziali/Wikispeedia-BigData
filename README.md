@@ -68,15 +68,15 @@ value appears it means that the player did not leave any rating.
 to load the datasets, to extract the property graph and to insert it into the neo4j database
 via **Cypher** queries (using the **py2neo** library).
 * **Neo4J** to store the property graph.
-* **Node.js** to create the desktop application (you may need to install it through `sudo apt install node npm`)
-* **Electron** (**NodeJS** module) to create the graphical application to 
+* **Node.js** to create the desktop application.
+* **Electron** (**NodeJS** module) to create the GUI to 
 interact and visualize the property graph.
 * **arbor.js** to visualize the queries result in HTML5 via a force-directed graph
 
 ---
 ## Data Flow
 ### PySpark
-First, after starting the Hadoop daemons,
+First, after starting the Hadoop and Spark daemons and the Neo4J service on your machine,
 you need to load the three dataset files into HDFS, moving with `cd` to the folder
 [`dataset/`](https://github.com/plspeziali/Wikispeedia-BigData/tree/main/dataset)
 you can do this through these commands:
@@ -150,7 +150,10 @@ r.pathLength = "AVG_LENGTH"
 r.rating = "AVG_RATING"
 ```
 
-You only need to run this script once per local Neo4J database.
+You only need to run this script once per local Neo4J database, it may take a while to make all the queries!
+
+After the script has finished working, you may turn off your Spark and Hadoop architecture,
+you are only going to need Neo4J from now on.
 
 ----
 
@@ -159,7 +162,8 @@ You only need to run this script once per local Neo4J database.
 The Electron application allows the user to make five queries on the database and display
 the results via an interactive HMTL5 Canvas.
 
-You can launch the application via the shell script `start.sh`.
+You can launch the application via the shell script `start.sh`
+(you may need to install it through `sudo apt install node npm`).
 
 The canvas over HTML uses the **arbor.js** library for creating force directed graphs; these graphs are not, however, directed.
 To overcome this problem, the nodes of the graph have been appropriately colored so
