@@ -57,15 +57,15 @@ The third one is `paths_finished.tsv`:
 where each row represents a game of Wikispeedia.
 The columns that matter to us are:
 * **durationInSec**: how long (in seconds) the game lasted.
-* **path**: the path the player created in order to get to the end, if a `<` appears
+* **path**: the path which the player created in order to get to the end, if a `<` appears
 it means that the player went a page back from where they originally were.
-* **rating**: the rating that the player gave to the path they just finished, if a `NULL`
+* **rating**: the rating that the player gave to the game they just finished, if a `NULL`
 value appears it means that the player did not leave any rating.
 
 ---
 ## Used Technologies
 * **Apache Spark** and **PySpark** (running on an **Apache Hadoop** cluster with **YARN**)
-to load the datasets, to extract the property graph and to insert it into the neo4j database
+to load the datasets, to extract the property graph and to insert it into the Neo4j database
 via **Cypher** queries (using the **py2neo** library).
 * **Neo4J** to store the property graph.
 * **Node.js** to create the desktop application.
@@ -98,7 +98,7 @@ you can make the Spark program execute.
 
     1. Through a map operation, the URL format of each article and each category is decoded.
 
-    2. Through a map reduce operation the categories of each article are grouped.
+    2. Through a map and a reduce operation the categories of each article are grouped.
 
    2. `links.tsv`: Through a map operation, the URL format of each source and destination article is decoded.
 
@@ -109,13 +109,13 @@ you can make the Spark program execute.
       (`ratingNum`, value `0` if the rating has not been assigned, otherwise value `1`)
       and the length of the path.
    
-      2. Through a map and reduce operation, all rating values for each individual path are added together.
+      2. Through a map and a reduce operation, all rating values for each individual path are added together.
    
-      3. Through a map and reduce operation, all values of the ratingNum variable of each
+      3. Through a map and a reduce operation, all values of the ratingNum variable of each
       individual path are added together.
    
       4. The two preceding operations are used to calculate the average rating of each
-      path through the use of a function and a reduce operation. 
+      path through the use of a custom function in a reduce operation. 
 
       5. Through the use of map, mapValues and reduce operations, the average duration in
       seconds of each path is calculated.
@@ -127,7 +127,7 @@ you can make the Spark program execute.
 
 After that, the three RDDs are converted into three dataframes, which are used to insert
 into the Neo4j database the nodes relating to articles with a category-related property,
-the edges of to hyperlinks and the edges of to challenges with the following properties:
+the edges referring to hyperlinks and the edges referring to challenges with the following properties:
 * average duration;
 * average rating;
 * average length.
@@ -152,8 +152,8 @@ r.rating = "AVG_RATING"
 
 You only need to run this script once per local Neo4J database, it may take a while to make all the queries!
 
-After the script has finished working, you may turn off your Spark and Hadoop architecture,
-you are only going to need Neo4J from now on.
+After the script has finished working, you may turn off your Spark and Hadoop daemons,
+you are only going to need the Neo4J service from now on.
 
 ----
 
