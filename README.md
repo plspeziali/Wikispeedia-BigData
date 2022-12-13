@@ -218,7 +218,13 @@ ratings using path length and match duration as features.
 
 However, despite having tuned the hyperparameters appropriately,
 the indicators returned an accuracy of about 20%,
-so we preferred to avoid and leave the null ratings at value `0`.
+so we preferred to avoid and leave the null ratings at value `0`. Different classification models, such as a neural network, 
+could be implemented to improve prediction. 
+
+Furthermore, one could add the possibility of leaving the user free to query the database, 
+through custom queries.
+
+
 
 
 
