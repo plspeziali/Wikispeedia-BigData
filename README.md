@@ -32,7 +32,7 @@ The first one is `categories.tsv` and represents the categories associated with 
 |-------------------|----------------------------------------|
 | A_Christmas_Carol | subject.Language_and_literature.Novels |
 | A_Tale_of_a_Tub   | subject.Language_and_literature.Novels |
-| Abacus            | subject.Everyday_life.Everyday_life    |
+| Abacus            | subject.Everyday_life                  |
 | Abacus            | subject.Mathematics                    |
 
 The second one is `links.tsv` and represents the various hyperlinks in each article:
