@@ -203,7 +203,7 @@ $( "#hardQ" ).click(async function () {
     	    name1 = el.get(0).properties.name;
     	    name2 = el.get(1).properties.name;
 	    var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
-	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    var n2 = sys.addNode(name2,{'color':'red','shape':'dot','label':name2});
 	    e = sys.addEdge(n1, n2);
             nodes.push(n1);
             nodes.push(n2);
@@ -212,7 +212,7 @@ $( "#hardQ" ).click(async function () {
 	    nodes.push(c);
 	    e = sys.addEdge(n1, c);
       	    edges.push(e);
-      	    var c = sys.addNode(el.get(3),{'color':'red','shape':'square','label':'Path Length: '+el.get(3)});
+      	    var c = sys.addNode(el.get(3),{'color':'orange','shape':'square','label':'Path Length: '+el.get(3)});
 	    nodes.push(c);
 	    e = sys.addEdge(n2, c);
       	    edges.push(e);
@@ -253,7 +253,7 @@ $( "#easyQ" ).click(async function () {
     	    name1 = el.get(0).properties.name;
     	    name2 = el.get(1).properties.name;
 	    var n1 = sys.addNode(name1,{'color':'green','shape':'dot','label':name1});
-	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    var n2 = sys.addNode(name2,{'color':'red','shape':'dot','label':name2});
 	    e = sys.addEdge(n1, n2);
             nodes.push(n1);
             nodes.push(n2);
@@ -262,7 +262,7 @@ $( "#easyQ" ).click(async function () {
 	    nodes.push(c);
 	    e = sys.addEdge(n1, c);
       	    edges.push(e);
-      	    var c = sys.addNode(el.get(3),{'color':'red','shape':'square','label':'Path Length: '+el.get(3)});
+      	    var c = sys.addNode(el.get(3),{'color':'orange','shape':'square','label':'Path Length: '+el.get(3)});
 	    nodes.push(c);
 	    e = sys.addEdge(n2, c);
       	    edges.push(e);
@@ -306,7 +306,7 @@ $( "#neigQ" ).click(async function () {
         for (let el of result.records) {
             console.log(el)
     	    name2 = el.get(1).properties.name;
-	    var n2 = sys.addNode(name2,{'color':'green','shape':'dot','label':name2});
+	    var n2 = sys.addNode(name2,{'color':'red','shape':'dot','label':name2});
 	    e = sys.addEdge(n1, n2);
             nodes.push(n2);
             edges.push(e);
