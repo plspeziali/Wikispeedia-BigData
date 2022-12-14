@@ -188,7 +188,7 @@ RETURN p
 ![Shortest Path query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn2.png)
 *  *  *  *  *
 3. **All neighbours of the 1st node**: by entering the name of an article, its neighbouring
-articles are displayed.
+articles are displayed. The source article is green while the neighbours are red.
 ```cypher
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
@@ -196,7 +196,7 @@ p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
 ![All neighbours query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn1.png)
 *  *  *  *  *
 4. **The Hardest Challenge**: the hardest challenge (the one with an average rating of 5 and
-the longest average duration) is displayed on a graph.
+the longest average duration) is displayed on a graph. The source article is green while the destination is red.
 ```cypher
 MATCH (a:Article) -[r:CHALLENGE {rating: "5"}]-> (b:Article)
 RETURN a,b,r.duration,r.pathLength ORDER BY r.duration DESC LIMIT 1
@@ -204,7 +204,7 @@ RETURN a,b,r.duration,r.pathLength ORDER BY r.duration DESC LIMIT 1
 ![Hardest query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn4.png)
 *  *  *  *  *
 5. **The Easiest Challenge**: the easiest challenge (the one with an average rating of 1 and
-the shortest average duration) is displayed on a graph.
+the shortest average duration) is displayed on a graph. The source article is green while the destination is red.
 ```cypher
 MATCH (a:Article) -[r:CHALLENGE {rating: "1"}]-> (b:Article)
 RETURN a,b,r.duration,r.pathLength ORDER BY r.duration ASC LIMIT 1
