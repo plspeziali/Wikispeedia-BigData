@@ -188,7 +188,7 @@ RETURN p
 ![Shortest Path query](https://raw.githubusercontent.com/plspeziali/Wikispeedia-BigData/main/images/wn2.png)
 *  *  *  *  *
 3. **All neighbours of the 1st node**: by entering the name of an article, its neighbouring
-articles are displayed. The source article is green while the neighbours are red.
+articles are displayed (they can be hyperlink or challenge neighbours). The source article is green while the neighbours are red.
 ```cypher
 MATCH (nodo1:Article {name: "ARTICLE_1_NAME"}), (nodo2:Article {name: "ARTICLE_2_NAME"}),
 p = (nodo1)-[*]-(nodo2) RETURN p, length(p) ORDER BY length(p) DESC LIMIT 1
