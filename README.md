@@ -145,9 +145,7 @@ CREATE (a)-[r:HYPERLINK]->(b) RETURN type(r)
 MATCH (a:Article), (b:Article)
 WHERE a.name = "ARTICLE_1_NAME" AND b.name = "ARTICLE_2_NAME"
 CREATE (a)-[r:CHALLENGE]->(b)
-SET r.duration = "AVG_DURATION"
-r.pathLength = "AVG_LENGTH"
-r.rating = "AVG_RATING"
+SET r.duration = "AVG_DURATION", r.pathLength = "AVG_LENGTH", r.rating = "AVG_RATING"
 ```
 
 You only need to run this script once per local Neo4J database, it may take a while to make all the queries!
