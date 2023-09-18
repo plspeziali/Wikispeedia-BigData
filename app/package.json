@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^22.3.21"
+    "electron": "^22.3.24"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
